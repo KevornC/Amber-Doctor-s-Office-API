@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/system/status',[App\Http\Controllers\SystemCheckController::class,'systemStatus']);
 
-//Staff Check
-
-Route::get('/staff/status/{id}',[App\Http\Controllers\UserController::class,'staffCheck']);
-
 //Guest Appointment
 
 Route::post('/set/appointment',[App\Http\Controllers\VisitorsController::class,'setAppointment']);
@@ -31,12 +27,16 @@ Route::get('/forgot/password/{email}',[App\Http\Controllers\UserController::clas
 Route::post('/update/password',[App\Http\Controllers\UserController::class,'updatePassword']);
 
 
-//Doctor Login
+//Login
+Route::post('/login',[App\Http\Controllers\LoginController::class,'login'])->name('login');
 
-Route::post('/login',[App\Http\Controllers\LoginController::class,'login']);
 
+Route::group(['middleware'=>['auth:sanctum']],function(){
+    //Staff Check
 
-//Doctor - Dashboard
+Route::get('/staff/status/{id}',[App\Http\Controllers\UserController::class,'staffCheck']);
+
+    //Doctor - Dashboard
 
 Route::get('/doctor/dashboard',[\App\Http\Controllers\DoctorController::class, 'dashboard']);
 Route::get('/edit/appointment/{id}',[\App\Http\Controllers\DoctorController::class, 'editAppointment']);
@@ -61,3 +61,6 @@ Route::get('/staff/update/password/{id}',[\App\Http\Controllers\DoctorController
 Route::get('/staff/search/{id}',[\App\Http\Controllers\DoctorController::class, 'search']);
 
 
+Route::get('/logout',[\App\Http\Controllers\LoginController::class, 'logout']);
+
+});
